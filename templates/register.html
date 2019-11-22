@@ -1,89 +1,77 @@
-{% extends "layout.html" %} {% block title %} Home {% endblock %} {% block main
-%}
+{% extends "layout.html" %} {% block title %} Register {% endblock %} {% block
+main %}
+<div class="form">
+  <form action="" method="post">
+    {{ form.hidden_tag() }}
+    <fieldset class="form-group">
+      <legend class="border-bottom mb-4">Join Now</legend>
+      <div class="form-group">
+        {{ form.username.label(class="form-control-label")}}
+        
+        {% if form.username.errors %}
+          {{form.username(class="form-control is-invalid")}}
+          <div class="invalid-feedback">
+            {% for error in form.username.errors %}
+              <span>{{ error }}</span>
+            {% endfor %}
+          </div>
+        {% else %}
+          {{form.username(class="form-control")}}
+        {% endif %}
 
-<form>
-  <div class="form-row">
-    <div class="form-group col-md-4">
-      <label for="firstname">First Name</label>
-      <input
-        type="text"
-        name="firstname"
-        class="form-control"
-        id="firstname"
-        placeholder="First Name.."
-        autofocus
-        required
-      />
+      </div>
+      <div class="form-group">
+        {{ form.email.label(class="form-control-label")}}
+        
+        {% if form.email.errors %}
+          {{form.email(class="form-control is-invalid")}}
+          <div class="invalid-feedback">
+            {% for error in form.email.errors %}
+              <span>{{ error }}</span>
+            {% endfor %}
+          </div>
+        {% else %}
+          {{form.email(class="form-control")}}
+        {% endif %}
+      </div>
+      <div class="form-group">
+        {{ form.password.label(class="form-control-label")}}
+        
+        {% if form.password.errors %}
+          {{form.password(class="form-control is-invalid")}}
+          <div class="invalid-feedback">
+            {% for error in form.password.errors %}
+              <span>{{ error }}</span>
+            {% endfor %}
+          </div>
+        {% else %}
+          {{form.password(class="form-control")}}
+        {% endif %}
+      </div>
+      <div class="form-group">
+        {{ form.confirm_password.label(class="form-control-label")}}
+        
+        {% if form.confirm_password.errors %}
+          {{form.confirm_password(class="form-control is-invalid")}}
+          <div class="invalid-feedback">
+            {% for error in form.confirm_password.errors %}
+              <span>{{ error }}</span>
+            {% endfor %}
+          </div>
+        {% else %}
+          {{form.confirm_password(class="form-control")}}
+        {% endif %}
+      </div>
+    </fieldset>
+    <div class="form-group">
+      {{ form.submit(class="btn btn-outline-info") }}
     </div>
-    <div class="form-group col-md-4">
-      <label for="lastname">Last Name</label>
-      <input
-        type="text"
-        name="lastname"
-        class="form-control"
-        id="lastname"
-        placeholder="Last Name.."
-        required
-      />
-    </div>
-    <div class="form-group col-md-4">
-      <label for="username">Username</label>
-      <input
-        type="text"
-        name="username"
-        class="form-control"
-        id="username"
-        placeholder="Username.."
-        required
-      />
-    </div>
+  </form>
+  <div class="border-top pt-3">
+    <small class="text-muted">
+      Have an account?<a class="ml-2" href="{{ url_for('login') }}">Sign In</a>
+    </small>
   </div>
-  <div class="form-row">
-    <div class="form-group col-md-5">
-      <label for="inputEmail4">Email</label>
-      <input
-        type="email"
-        name="email"
-        class="form-control"
-        id="email"
-        placeholder="Email.."
-        required
-      />
-    </div>
-    <div class="form-group col-md-4">
-      <label for="password">Password</label>
-      <input
-        type="password"
-        name="password"
-        class="form-control"
-        id="password"
-        placeholder="Password.."
-        required
-      />
-    </div>
-    <div class="form-group col-md-3">
-      <label for="gender">Gender</label>
-      <select class="custom-select" id="gender" name="gender" required>
-        <option value="">Gender</option>
-        <option value="male">Male</option>
-        <option value="female">Female</option>
-      </select>
-    </div>
-  </div>
-  <div class="form-row">
-    <div class="form-group col-md-12">
-      <label for="address">Address</label>
-      <input
-        type="text"
-        name="address"
-        class="form-control"
-        id="address"
-        placeholder="Address.."
-        required
-      />
-    </div>
-  </div>
-  <button type="submit" class="btn btn-primary">Register</button>
-</form>
+</div>
 
 {% endblock %}
