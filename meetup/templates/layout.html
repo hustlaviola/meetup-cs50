@@ -29,14 +29,12 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbar">
-                {% if session.user_id %}
-                    <ul class="navbar-nav mr-auto mt-2">
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/profile">Profile</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
-                    </ul>
+                {% if current_user.is_authenticated %}
                     <ul class="navbar-nav ml-auto mt-2">
-                        <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('profile') }}">Profile</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">About</a></li>
+                        <li class="nav-item ml-5"><a class="nav-link" href="/logout">Log Out</a></li>
                     </ul>
                 {% else %}
                     <ul class="navbar-nav ml-auto mt-2">

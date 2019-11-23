@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block main %}
+{% if current_user.is_authenticated %}
+{% for post in posts %}
+    <p>{{ post.message }}</p>
+    <p>{{ post.time }}</p>
+{% endfor %}
+
+{% else %}
+<a href="/login"><p class="text-center">Join Us</p></a>
+{% endif %}
+{% endblock %}
