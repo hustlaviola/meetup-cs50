@@ -1,6 +1,9 @@
+import os
+from PIL import Image
+import secrets
 from flask import render_template, url_for, flash, redirect, request
 from meetup import app, db, bcrypt
-from meetup.forms import RegistrationForm, LoginForm
+from meetup.forms import RegistrationForm, LoginForm, UpdateProfileForm
 from meetup.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
 
@@ -63,8 +66,37 @@ def logout():
 def about():
     return render_template('about.html')
 
-@app.route('/profile')
+def save_img(form_img):
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_img.filename)
+    img_fn = random_hex + f_ext
+    img_path = os.path.join(app.root_path, 'static/profile-imgs', img_fn)
+    size = (125, 125)
+    image = Image.open(form_img)
+    image.thumbnail(size)
+    image.save(img_path)
+    return img_fn
+
+@app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    return render_template('profile.html')
+    form = UpdateProfileForm()
+    if form.validate_on_submit():
+        if form.image.data:
+            img_file = save_img(form.image.data)
+            current_user.image_file = img_file
+        current_user.username = form.username.data
+        current_user.email = form.email.data
+        db.session.commit()
+        flash('Profile updated successfully', 'success')
+        return redirect(url_for('profile'))
+    elif request.method == 'GET':
+        form.username.data = current_user.username
+        form.email.data = current_user.email
+    img = url_for('static', filename='profile-imgs/' + current_user.image_file)
+    return render_template('profile.html', img=img, form=form)
 
+@app.route('/posts')
+@login_required
+def post():
+    return render_template('post.html')
