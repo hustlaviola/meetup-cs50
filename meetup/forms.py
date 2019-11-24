@@ -29,7 +29,6 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Email already in use')
 
 
-
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
@@ -41,23 +40,40 @@ class UpdateProfileForm(FlaskForm):
     username = StringField('Username', validators=[
                            DataRequired(), Length(min=3, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    image = FileField('Update Profile Image', validators=[FileAllowed(['jpg', 'png', 'jpeg'])])
+    image = FileField('Update Profile Image', validators=[
+                      FileAllowed(['jpg', 'png', 'jpeg'])])
     submit = SubmitField('Update')
 
     def validate_username(self, username):
         if username.data != current_user.username:
             user = User.query.filter_by(username=username.data).first()
-            print(user)
             if user:
                 raise ValidationError('Username already in use')
 
     def validate_email(self, email):
         if email.data != current_user.email:
             user = User.query.filter_by(email=email.data).first()
-            print(user)
             if user:
                 raise ValidationError('Email already in use')
+
 
 class PostForm(FlaskForm):
     message = TextAreaField('Message', validators=[DataRequired()])
     submit = SubmitField('Post')
+
+
+class RequestResetForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Request pasword reset')
+
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if user is None:
+            raise ValidationError('There is no account with the given email')
+
+
+class ResetPaswordForm(FlaskForm):
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm Password', validators=[
+                                     DataRequired(), EqualTo('password')])
+    submit = SubmitField('Reset')
