@@ -5,13 +5,22 @@
 {% endblock %}
 
 {% block main %}
-{% if current_user.is_authenticated %}
-{% for post in posts %}
-    <p>{{ post.message }}</p>
-    <p>{{ post.time }}</p>
-{% endfor %}
-
-{% else %}
-<a href="/login"><p class="text-center">Join Us</p></a>
-{% endif %}
+    {% if current_user.is_authenticated %}
+        {% for post in posts %}
+            <a id="post-link" href="{{ url_for('post', post_id=post.id) }}">
+                <article class="media content-section">
+                    <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile-imgs/' + post.owner.image_file) }}" />
+                <div class="media-body">
+                    <div class="article-metadata">
+                        <span class="mr-2">{{ post.owner.username }}</span>
+                        <small class="text-muted">{{ post.posted_at.strftime('%Y-%m-%d') }}</small>
+                    </div>
+                    <p class="article-content">{{ post.message }}</p>
+                </div>
+                </article>
+            </a>
+        {% endfor %}
+    {% else %}
+        <a href="/login"><p class="text-center">Join Us</p></a>
+    {% endif %}
 {% endblock %}

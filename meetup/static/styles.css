@@ -23,6 +23,28 @@ body {
     color: #2e944b;
 }
 
+
+.article-content {
+  white-space: pre-line;
+}
+
+.article-img {
+  height: 65px;
+  width: 65px;
+  margin-right: 16px;
+}
+
+.article-metadata {
+  padding-bottom: 1px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid #e3e3e3
+}
+
+.article-metadata a:hover {
+  color: #333;
+  text-decoration: none;
+}
+
 .content-section {
     background: #ffffff;
     padding: 10px 20px;
@@ -38,6 +60,16 @@ body {
     margin-bottom: 16px;
   }
 
+  #post-link
+  {
+    color: #333333;
+    text-decoration: none;
+  }
+
+  #post-link article:hover
+  {
+    background-color: #fafafa;
+  }
 
 /* Large devices (desktops, 992px and up) */
 @media (min-width: 992px) {

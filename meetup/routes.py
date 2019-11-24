@@ -1,29 +1,15 @@
 import os
 from PIL import Image
 import secrets
-from flask import render_template, url_for, flash, redirect, request
+from flask import render_template, url_for, flash, redirect, request, abort
 from meetup import app, db, bcrypt
-from meetup.forms import RegistrationForm, LoginForm, UpdateProfileForm
+from meetup.forms import RegistrationForm, LoginForm, UpdateProfileForm, PostForm
 from meetup.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
 
-posts = [
-    {
-        "message": "My post is big, need your comments",
-        "time": "06:30am"
-    },
-    {
-        "message": "My post is not small, lets see whatsup",
-        "time": "04:30am"
-    },
-    {
-        "message": "My post is very small, need your likes",
-        "time": "07:30am"
-    }
-]
-
 @app.route('/')
 def index():
+    posts = Post.query.all()
     return render_template('index.html', posts=posts)
 
 
@@ -96,7 +82,46 @@ def profile():
     img = url_for('static', filename='profile-imgs/' + current_user.image_file)
     return render_template('profile.html', img=img, form=form)
 
-@app.route('/posts')
+@app.route('/new_post', methods=['GET', 'POST'])
 @login_required
-def post():
-    return render_template('post.html')
+def new_post():
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(message=form.message.data, owner=current_user)
+        db.session.add(post)
+        db.session.commit()
+        flash('Post created successfully', 'success')
+        return redirect(url_for('index'))
+    return render_template('new_post.html', form=form, legend='New Post')
+
+@app.route('/posts/<int:post_id>')
+def post(post_id):
+    post = Post.query.get_or_404(post_id)
+    return render_template('post.html', post=post)
+
+@app.route('/posts/<int:post_id>/update', methods=['GET', 'POST'])
+@login_required
+def update_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    if post.owner != current_user:
+        abort(403)
+    form = PostForm()
+    if form.validate_on_submit():
+        post.message = form.message.data
+        db.session.commit()
+        flash('Post updated successfully', 'success')
+        return redirect(url_for('post', post_id=post.id))
+    elif request.method == 'GET':
+        form.message.data = post.message
+    return render_template('new_post.html', form=form, legend='Update Post')
+
+@app.route('/posts/<int:post_id>/delete', methods=['POST'])
+@login_required
+def delete_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    if post.owner != current_user:
+        abort(403)
+    db.session.delete(post)
+    db.session.commit()
+    flash('Post deleted successfully', 'success')
+    return redirect(url_for('index'))
