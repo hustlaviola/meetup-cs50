@@ -7,7 +7,7 @@
 {% block main %}
     {% if current_user.is_authenticated %}
         {% for post in posts.items %}
-            <a id="post-link" href="{{ url_for('post', post_id=post.id) }}">
+            <a id="post-link" href="{{ url_for('posts.post', post_id=post.id) }}">
                 <article class="media content-section">
                     <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile-imgs/' + post.owner.image_file) }}" />
                 <div class="media-body">
@@ -24,9 +24,9 @@
         {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=3) %}
             {% if page_num %}
                 {% if posts.page == page_num %}
-                    <a class="btn btn-info mb-4" href="{{ url_for('index', page=page_num) }}">{{ page_num }}</a>
+                    <a class="btn btn-info mb-4" href="{{ url_for('main.index', page=page_num) }}">{{ page_num }}</a>
                 {% else %}
-                    <a class="btn btn-outline-info mb-4" href="{{ url_for('index', page=page_num) }}">{{ page_num }}</a>
+                    <a class="btn btn-outline-info mb-4" href="{{ url_for('main.index', page=page_num) }}">{{ page_num }}</a>
                 {% endif%}                
             {% else %}
                 ...
@@ -34,6 +34,6 @@
         {% endfor %}
         </div>
     {% else %}
-        <a href="/login"><p class="text-center">Join Us</p></a>
+        <a href="{{ url_for('users.register') }}"><p class="text-center">Join Us</p></a>
     {% endif %}
 {% endblock %}
